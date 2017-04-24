@@ -1,0 +1,257 @@
+{
+  "definitions": {
+    "Error": {
+      "properties": {
+        "code": {
+          "description": "Basic opaque status code", 
+          "type": "integer"
+        }, 
+        "message": {
+          "description": "the human readable description of this error's error code", 
+          "type": "string"
+        }
+      }, 
+      "required": [
+        "code", 
+        "message"
+      ], 
+      "type": "object"
+    }, 
+    "Feedback": {
+      "properties": {
+        "response": {
+          "description": "status of received feedback", 
+          "format": "byte", 
+          "type": "string"
+        }
+      }, 
+      "required": [
+        "image_id"
+      ], 
+      "type": "object"
+    }, 
+    "PhotoInfo": {
+      "properties": {
+        "annotated_image": {
+          "description": "a base64 encoded annotated image", 
+          "format": "byte", 
+          "type": "string"
+        }, 
+        "faces": {
+          "schema": {
+            "description": "an array of emotion probabilites, face location (x,y), cropped height and width, an empty feedback form, and a base64 encoded cropped thumbnail for each face found in this image", 
+            "type": "array"
+          }
+        }, 
+        "id": {
+          "description": "an identification number for received image", 
+          "format": "byte", 
+          "type": "string"
+        }
+      }, 
+      "required": [
+        "faces"
+      ], 
+      "type": "object"
+    }, 
+    "StatusInfo": {
+      "properties": {
+        "avg_response_time": {
+          "description": "the average time in milliseconds that it took to generate the last 'request_interval' responses", 
+          "type": "number"
+        }, 
+        "num_requests": {
+          "description": "the number of requests this service has received in the last 'time_interval' number of seconds", 
+          "type": "integer"
+        }, 
+        "service_name": {
+          "description": "the name of this service", 
+          "type": "string"
+        }, 
+        "uptime": {
+          "description": "the number of seconds this service has been running", 
+          "type": "integer"
+        }
+      }, 
+      "required": [
+        "service_name"
+      ], 
+      "type": "object"
+    }
+  }, 
+  "info": {
+    "description": "Happiness intensity estimation of a group image", 
+    "title": "GREP v1.0.0 RESTful API", 
+    "version": "multiple"
+  }, 
+  "paths": {
+    "/admin/status": {
+      "get": {
+        "description": "This endpoint provides a remote way to monitor this service<br/>and get status information about how well it is running.", 
+        "parameters": [
+          {
+            "description": "A array of the keys that should be included in the response (default is all keys)", 
+            "in": "query", 
+            "name": "include_keys", 
+            "required": false, 
+            "type": "array"
+          }, 
+          {
+            "description": "A array of keys that should be excluded from the response (default is no keys)", 
+            "in": "query", 
+            "name": "exclude_keys", 
+            "required": false, 
+            "type": "array"
+          }, 
+          {
+            "description": "The number of recent requests to include when calculating 'avg_response_time' (default=100)", 
+            "in": "query", 
+            "name": "request_interval", 
+            "required": false, 
+            "type": "integer"
+          }, 
+          {
+            "description": "The number of seconds of recent activity to include when calculating 'num_requests' (default=60)", 
+            "in": "query", 
+            "name": "time_interval", 
+            "required": false, 
+            "type": "integer"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "A status info object", 
+            "schema": {
+              "$ref": "#/definitions/StatusInfo"
+            }
+          }, 
+          "default": {
+            "description": "Unexpected error", 
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }, 
+        "summary": "Get current status", 
+        "tags": [
+          "admin"
+        ]
+      }
+    }, 
+    "/v1.0.0/feedback": {
+      "post": {
+        "consumes": [
+          "multipart/form-data", 
+          "application/x-www-form-urlencoded"
+        ], 
+        "description": "Return the face and true label when user clicks on the corresponding emoji. The users are given the option to teach the model by clicking on the true emoji icon should the model makes a wrong predictions on a face. Faces with no feedback will default to None and assumes the model made a correct prediction.", 
+        "parameters": [
+          {
+            "description": "The id of the image processed. This field must be specified in order to insert the feedback to the correct image documentation.", 
+            "in": "query", 
+            "name": "image_id", 
+            "required": false, 
+            "type": "string"
+          }, 
+          {
+            "description": "The index of the face in question. This field must be specified in order to insert the feedback to the correct image documentation.", 
+            "in": "query", 
+            "name": "face_index", 
+            "required": false, 
+            "type": "string"
+          }, 
+          {
+            "description": "User feedback of the true emotion if the model predicted less than accurate.", 
+            "in": "query", 
+            "name": "feedback", 
+            "required": false, 
+            "type": "string"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "A user feedback channel", 
+            "schema": {
+              "$ref": "#/definitions/Feedback"
+            }
+          }, 
+          "default": {
+            "description": "Unexpected error", 
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }, 
+        "summary": "Record user feedback", 
+        "tags": [
+          "v1.0.0"
+        ]
+      }
+    }, 
+    "/v1.0.0/predict": {
+      "post": {
+        "consumes": [
+          "multipart/form-data", 
+          "application/x-www-form-urlencoded"
+        ], 
+        "description": "Detect faces, extract highly efficient features, predict happiness intensity and provide an annotated image and thumbnails of predicted faces.", 
+        "parameters": [
+          {
+            "description": "A base64 string from an image taken via webcam or photo upload. This field must be specified, you must pass an image via the `image_base64` form parameter.", 
+            "in": "query", 
+            "name": "image_base64", 
+            "required": false, 
+            "type": "string"
+          }, 
+          {
+            "description": "The URL of an image that should be processed. If this field is not specified, you must pass an image via the `image_url` form parameter.", 
+            "in": "query", 
+            "name": "image_url", 
+            "required": false, 
+            "type": "string"
+          }, 
+          {
+            "description": "An image that should be processed. This is used when you need to upload an image for processing rather than specifying the URL of an existing image. If this field is not specified, you must pass an image URL via the `image_buf` parameter", 
+            "in": "formData", 
+            "name": "image_buf", 
+            "required": false, 
+            "type": "file"
+          }, 
+          {
+            "description": "A boolean input flag (default=false) indicating whether or not to build and return annotated images within the `annotated_image` field of each response object", 
+            "in": "query", 
+            "name": "annotate_image", 
+            "required": false, 
+            "type": "boolean"
+          }, 
+          {
+            "description": "A boolean input flag (default=false) indicating whether or not to crop and return faces within the `thumbnails` field of each response object", 
+            "in": "query", 
+            "name": "crop_image", 
+            "required": false, 
+            "type": "boolean"
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "A photo info objects", 
+            "schema": {
+              "$ref": "#/definitions/PhotoInfo"
+            }
+          }, 
+          "default": {
+            "description": "Unexpected error", 
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }, 
+        "summary": "Detect faces in the image and predict both individual-level and group-level happiness intensity", 
+        "tags": [
+          "v1.0.0"
+        ]
+      }
+    }
+  }, 
+  "swagger": "2.0"
+}
