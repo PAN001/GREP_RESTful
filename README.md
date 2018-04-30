@@ -7,11 +7,11 @@ GREP (GRoup Emotion Parser) aims at detecting human faces within the image and e
 1. POST /v1.0.0/predict
 2. POST /v1.0.0/feedback
 
-You need to send a request with the url of the image or a base-64 format of the image. You have the option to specify whether to return annotated faces and cropped thumbnail of each face in base64. More detailed API documentation could be found [here](https://grep.net.cn/doc).
+You need to send a request with the url of the image or a base-64 format of the image. You have the option to specify whether to return annotated faces and cropped thumbnail of each face in base64. More detailed API documentation could be found [here](https://ec2-18-188-109-208.us-east-2.compute.amazonaws.com/doc).
 
 ## Demo Website: grep.net.cn
 
-For demonstration purpose, an interactive web application GREP is built and running at [here](https://grep.net.cn). It is an end-to-end system that detects faces in the group image and estimates happiness intensity on both individual level and group level. This app uses the RESTful API to perform the estimation task. It allows you to have multiple options to upload an image, including directly using url, selecting a local image, or using the webcam to take the picture. After uploading the image, each detected face together with individual happiness estimation and group happiness estimation will show on the webpage. The app also provides the user with a way to give feedback, which will serve as a training sample and help improve the system in the future.
+For demonstration purpose, an interactive web application GREP is built and running at [here](https://https://ec2-18-188-109-208.us-east-2.compute.amazonaws.com/doc). It is an end-to-end system that detects faces in the group image and estimates happiness intensity on both individual level and group level. This app uses the RESTful API to perform the estimation task. It allows you to have multiple options to upload an image, including directly using url, selecting a local image, or using the webcam to take the picture. After uploading the image, each detected face together with individual happiness estimation and group happiness estimation will show on the webpage. The app also provides the user with a way to give feedback, which will serve as a training sample and help improve the system in the future.
 		
 The web application is the so called single-page application (SPA). It is such a web application that fits on a single web page with the goal of providing a more fluid user experience similar to a desktop application. 
 	
