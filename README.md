@@ -1,5 +1,19 @@
 # GREP RESTful API
 
+## Install and run
+
+```
+# Create and activate new virtual environment
+virtualenv venv
+source venv/bin/activate
+
+# Install requirements
+pip install -r requirements.txt
+
+# Run the app
+sudo python run_debug.py
+```
+
 ## Overview
 
 GREP (GRoup Emotion Parser) aims at detecting human faces within the image and estimates both individual-level and group-level happiness intensity is set and configured on a virtual server. Currently, GREP only offers two APIs:
@@ -7,7 +21,7 @@ GREP (GRoup Emotion Parser) aims at detecting human faces within the image and e
 1. POST /v1.0.0/predict
 2. POST /v1.0.0/feedback
 
-You need to send a request with the url of the image or a base-64 format of the image. You have the option to specify whether to return annotated faces and cropped thumbnail of each face in base64. More detailed API documentation could be found [here](https://18.188.109.208/doc).
+You need to send a request with the url of the image or a base-64 format of the image. You have the option to specify whether to return annotated faces and cropped thumbnail of each face in base64. More detailed API documentation could be found [here](https://18.191.12.77/doc).
 
 ## Demo Website: grep.net.cn
 
