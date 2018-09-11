@@ -32,7 +32,7 @@ tf.app.flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
 INDIVIDUAL_MODEL_PATH = "models/individual_5netsRRDE_SVR.pkl"
 GROUP_MODEL_PATH = "models/weighted_meaning_encoding_group_5netsRRDE_SVR.pkl"
 RRDE_MODEL_PATH = "models/5nets_model.npy"
-LSTM_MODEL_PATH = "models/5nets_lstm_model_128d.npy"
+LSTM_MODEL_PATH = "models/5nets_lstm_model.npy"
 
 NUMBER_OF_NETS = 5
 
@@ -171,8 +171,10 @@ def extract_features(FaceInfo, SESSION_ID):
             out = sess.run(logit, {is_training: False, images: im})
             if i == 1:
                 FaceInfo[ii]['feature'] = [out]
+                features.append({'feature':[out]})
             else:
                 FaceInfo[ii]['feature'].append(out) # stack feature vector together e.g. if there are 5 nets in RRDE, the dimession of feature is 64*5
+                features[ii]['feature'].append(out)
             ii += 1
 
         np.save('features/' + '%dnets_feature.npy' % i, features)
